@@ -1,0 +1,54 @@
+= About
+
+acts_as_normalized is a Rails plugin that automatically normalizes selected ActiveRecord model attributes before validation. By default it strips leading and trailing whitespaces and converts blank values to nil. You can set :nilify option to false to keep empty strings.
+
+If optional block is given, it is called with already stripped attribute value and may be used to write your own normalization code.
+
+= Installation
+
+  ./script/plugin install git://github.com/vits/acts_as_normalized.git 
+
+= Usage
+
+  class Person < ActiveRecord::Base
+
+    # Give one or more attribute names
+    acts_as_normalized :first_name, :last_name
+
+    # Use :nilify option to keep blank string values
+    acts_as_normalized :address, :nilify => false
+
+    # Use block to do custom normalization
+    # Value is already stripped before calling block
+    #
+    # NB you should not use return statement in block!
+    acts_as_normalized :phone_number |value|
+      value.is_a?(String) ? value.gsub(/\W/, '') : value
+    end
+
+  end
+  
+  person = Person.new
+
+  # empty string becomes nil
+  person.first_name = ''
+  person.first_name # => nil
+
+  person.last_name = " \tSimpson\n"
+  person.last_name # => 'Simpson'
+
+  # empty string preserved by :nilify => false
+  person.address = '   '
+  person.address = ''
+
+  # custom normalization
+  person.phone_number = '(555) 123.4567'
+  person.phone_number # => '5551234567'
+
+= Credits
+
+Some ideas for this plugin are taken from acts_as_stripped[http://github.com/wireframe/acts_as_stripped] and  attribute_normalizer[http://github.com/mdeering/attribute_normalizer].
+
+= License
+
+Copyright (c) 2009 Vitauts Stočka, released under the MIT license.
