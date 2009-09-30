@@ -8,7 +8,7 @@ module ActsAsNormalized
  
     def acts_as_normalized(*args, &block)
       options = {
-        :nilify => true
+        :nilify => false
       }.merge(args.extract_options!)
       
       before_validation do |record|

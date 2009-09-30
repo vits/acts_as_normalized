@@ -24,9 +24,9 @@ describe "#acts_as_normalized" do
       example.first.should == 'test'
     end
   
-    it "should nilify empty string" do
+    it "should not nilify empty string" do
       example = Example.create(:first => '  ').reload
-      example.first.should == nil
+      example.first.should == ''
     end
   
     it "should not normalize other attributes" do
@@ -45,17 +45,17 @@ describe "#acts_as_normalized" do
     end
   end
   
-  describe "without block and with nilify set to false" do
+  describe "without block and with nilify set to true" do
     before :all do
       Object.send(:remove_const, :Example) if defined?(Example)
       class Example < ActiveRecord::Base
-        acts_as_normalized :first, :nilify => false
+        acts_as_normalized :first, :nilify => true
       end
     end
     
-    it "should not nilify empty string" do
+    it "should nilify empty string" do
       example = Example.create(:first => '  ').reload
-      example.first.should == ''
+      example.first.should == nil
     end
     
     it "should pass nil value" do
@@ -84,9 +84,9 @@ describe "#acts_as_normalized" do
       example.first.should == 'SPACES'
     end
     
-    it "should nilify empty string" do
+    it "should not nilify empty string" do
       example = Example.create(:first => '  ').reload
-      example.first.should == nil
+      example.first.should == ''
     end
     
     it "should pass non-string value to block" do
@@ -95,19 +95,19 @@ describe "#acts_as_normalized" do
     end
   end
   
-  describe "with block nilify set to false" do
+  describe "with block nilify set to true" do
     before :all do
       Object.send(:remove_const, :Example) if defined?(Example)
       class Example < ActiveRecord::Base
-        acts_as_normalized :first, :nilify => false do |value|
+        acts_as_normalized :first, :nilify => true do |value|
           value.is_a?(String) ? value.upcase : value
         end
       end
     end
     
-    it "should not nilify empty string" do
+    it "should nilify empty string" do
       example = Example.create(:first => '  ').reload
-      example.first.should == ''
+      example.first.should == nil
     end
     
     it "should pass nil value" do
