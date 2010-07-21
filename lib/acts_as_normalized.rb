@@ -24,3 +24,6 @@ module ActsAsNormalized
     
   end
 end
+
+ActiveModel::Base.send(:include, ActsAsNormalized) if defined?(ActiveModel::Base)
+ActiveRecord::Base.send(:include, ActsAsNormalized) if defined?(ActiveRecord::Base)
